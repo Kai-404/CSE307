@@ -1,0 +1,11 @@
+Input,Output
+__PrivateVar3__,True
+hello world,False
+1hisIsNotAVar,False
+badIdentifier#$,False
+returnOfTheGood,True
+4_This_Is_Not_Ok__,False
+True,False
+hello\tworld,False
+FoDor,True
+fAlSe,True

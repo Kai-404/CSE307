@@ -1,0 +1,11 @@
+Input1,Input2,Output
+" ' "" \\\\\\\\\\\\\\\\\\\\\\\\\\\\\""\",testTesttest',False
+"""""",,True
+"""123\",abc',False
+,"""I have no idea\n""",True
+"""\\\\\""",,False
+"""\\\\\","this works!""",True
+"""apple\bananna\","pear""",False
+\\\n\'\,,False
+"""abc'def'ghi\","""",True
+""" ' \","""",True

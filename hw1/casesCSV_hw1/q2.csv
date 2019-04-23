@@ -1,0 +1,11 @@
+Input,Output
+0B11111110,int
+0o7289,None
+0o12347,int
+O765,None
+0XAb,int
+0x91gG,None
+0x,None
+0e-0xb,None
+9999999999999,int
+4.00000009000,float
