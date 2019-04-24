@@ -37,10 +37,10 @@ class PrintNode(Node):
         self.value = self.value.evaluate()
         if(self.value == None):
             return
-        if(isinstance(self.value, str)):
-            print("'"+self.value+"'")
-        else: 
-            print(self.value)
+        # if(isinstance(self.value, str)):
+        #     print("'"+self.value+"'")
+        # else: 
+        print(self.value)
 
 class BopNode(Node):
     def __init__(self, op, v1, v2):
@@ -234,7 +234,7 @@ tokens = (
     )
 
 # Tokens
-# t_PRINT    = 'print'
+t_PRINT    = 'print'
 t_LPAREN  = r'\('
 t_RPAREN  = r'\)'
 t_PLUS    = r'\+'
@@ -311,11 +311,17 @@ precedence = (
     ('right', 'UMINUS','POWER')
     )
 
-def p_print_smt(t):
+def p_execute_smt(t):
     """
-    print_smt : expression SEMICOLON
+    execute_smt : expression SEMICOLON
     """
     t[0] = PrintNode(t[1])
+
+def p_print_op(t):
+    '''
+    print_OP : PRINT LPAREN expression RPAREN SEMICOLON
+    '''
+    t[0] = PrintNode(t[3])
 
 def p_expression_binop(t):
     '''expression : expression PLUS expression 
@@ -436,4 +442,3 @@ for line in fd:
     except Exception:
         print("SYNTAX ERROR")
 
-        ##
