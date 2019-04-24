@@ -223,9 +223,18 @@ class IndexListNode(Node):
             return
         return a[b]
 
+class BlockNode(Node):
+    def __init__(self,sl):
+        self.statementList = sl
+
+    def execute(self):
+         for statement in self.statementList:
+             statement.execute()
+
 
 
 tokens = (
+    'LCURLY','RCURLY',
     'PRINT','LPAREN', 'RPAREN', 'SEMICOLON', 'SQUOTE', 'DQUOTE','COMMA','LSBRACKET',"RSBRACKET",
     'STRING', 'NUMBER', 'TRUE', 'FALSE',
     'PLUS','MINUS','TIMES','DIVIDE','UMINUS','POWER','INDEXTUPLE','DIV', 'MOD','IN','CONS',
@@ -235,6 +244,8 @@ tokens = (
 
 # Tokens
 t_PRINT    = 'print'
+t_LCURLY = r'{'
+t_RCURLY = r'}'
 t_LPAREN  = r'\('
 t_RPAREN  = r'\)'
 t_PLUS    = r'\+'
@@ -311,6 +322,33 @@ precedence = (
     ('right', 'UMINUS','POWER')
     )
 
+
+def p_block(p):
+    '''
+     block : LCURLY statement_list RCURLY
+    '''
+    p[0] = BlockNode(p[2])
+
+def p_statement_list(p):
+    '''
+     statement_list : statement_list statement 
+    '''
+    p[0] = p[1] + [p[2]]
+
+def p_statement_list_val(p):
+    '''
+    statement_list : statement
+    '''
+    p[0] = [p[1]]
+
+def p_statement_exp_print(p):
+    '''
+    statement : execute_smt
+              | print_op
+    '''
+    p[0] = p[1]
+
+
 def p_execute_smt(t):
     """
     execute_smt : expression SEMICOLON
@@ -319,7 +357,7 @@ def p_execute_smt(t):
 
 def p_print_op(t):
     '''
-    print_OP : PRINT LPAREN expression RPAREN SEMICOLON
+    print_op : PRINT LPAREN expression RPAREN SEMICOLON
     '''
     t[0] = PrintNode(t[3])
 
@@ -441,4 +479,3 @@ for line in fd:
         ast.execute()
     except Exception:
         print("SYNTAX ERROR")
-
