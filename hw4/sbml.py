@@ -463,19 +463,27 @@ import sys
 
 if (len(sys.argv) != 2):
     sys.exit("invalid arguments")
-fd = open(sys.argv[1], 'r')
-code = ""
+# fd = open(sys.argv[1], 'r')
+# code = ""
 
-for line in fd:
-    code = line.strip()
+# for line in fd:
+#     code = line.strip()
 
-    try:
-        lex.input(code)
-        # while True:
-        #     token = lex.token()
-        #     if not token: break
-        #     print(token)
-        ast = yacc.parse(code)
-        ast.execute()
-    except Exception:
-        print("SYNTAX ERROR")
+#     try:
+#         lex.input(code)
+#         # while True:
+#         #     token = lex.token()
+#         #     if not token: break
+#         #     print(token)
+#         ast = yacc.parse(code)
+#         ast.execute()
+#     except Exception:
+#         print("SYNTAX ERROR")
+
+with open(sys.argv[1], 'r') as myfile:
+        data = myfile.read().replace('\n', '')
+try:
+    root = yacc.parse(data)
+    root.execute()
+except Exception:
+    print("SYNTAX ERROR")
