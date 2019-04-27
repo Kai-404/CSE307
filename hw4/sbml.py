@@ -257,15 +257,22 @@ class AssignNameNode(Node):
 
 reserved = {
     'print' : 'PRINT',
+    'True'  : 'TRUE',
+    'False' : 'FALSE',
+    'div'   : 'DIV',
+    'in'    : 'IN',
+    'mod'   : 'MOD',
+    'andalso': 'AND',
+    'orelse': 'OR',
+    'not'   : 'NOT'
  }
 tokens = (
     'ASSIGN','NAME',
     'LCURLY','RCURLY',
     'LPAREN', 'RPAREN', 'SEMICOLON', 'SQUOTE', 'DQUOTE','COMMA','LSBRACKET',"RSBRACKET",
-    'STRING', 'NUMBER', 'TRUE', 'FALSE',
-    'PLUS','MINUS','TIMES','DIVIDE','UMINUS','POWER','INDEXTUPLE','DIV', 'MOD','IN','CONS',
-    'SMALLER','SMALLEROREQUAL','EQUAL','NOTEQUAL','BIGGER','BIGGEROREQUAL',
-    'NOT', 'AND','OR','ID'
+    'STRING', 'NUMBER',
+    'PLUS','MINUS','TIMES','DIVIDE','UMINUS','POWER','INDEXTUPLE','CONS',
+    'SMALLER','SMALLEROREQUAL','EQUAL','NOTEQUAL','BIGGER','BIGGEROREQUAL'
     )+tuple(reserved.values())
 
 # Tokens
@@ -286,13 +293,33 @@ t_DIVIDE  = r'/'
 t_SEMICOLON =r';'
 t_LSBRACKET =r'\['
 t_RSBRACKET =r'\]'
-t_TRUE =r'True'
-t_FALSE =r'False'
+# t_TRUE =r'True'
+def t_TRUE(t):
+    r'True'
+    t.type = reserved.get(t.value,'TRUE')
+    return t
+#t_FALSE =r'False'
+def t_FALSE(t):
+    r'False'
+    t.type = reserved.get(t.value,'FALSE')
+    return t
 t_POWER =r'\*\*'
 t_INDEXTUPLE =r'\#'
-t_DIV =r'div'
-t_MOD =r'mod'
-t_IN =r'in'
+#t_DIV =r'div'
+def t_DIV(t):
+    r'div'
+    t.type = reserved.get(t.value,'DIV')
+    return t
+#t_MOD =r'mod'
+def t_MOD(t):
+    r'mod'
+    t.type = reserved.get(t.value,'MOD')
+    return t
+#t_IN =r'in'
+def t_IN(t):
+    r'in'
+    t.type = reserved.get(t.value,'IN')
+    return t
 t_CONS =r'::'
 
 t_SMALLER =r'<'
@@ -302,16 +329,26 @@ t_NOTEQUAL =r'<>'
 t_BIGGER =r'>'
 t_BIGGEROREQUAL =r'>='
 
-t_NOT =r'not'
-t_AND =r'andalso'
-t_OR =r'orelse'
+#t_NOT =r'not'
+def t_NOT(t):
+    r'not'
+    t.type = reserved.get(t.value,'NOT')
+    return t
+#t_AND =r'andalso'
+def t_AND(t):
+    r'andalso'
+    t.type = reserved.get(t.value,'AND')
+    return t
+#t_OR =r'orelse'
+def t_OR(t):
+    r'orelse'
+    t.type = reserved.get(t.value,'OR')
+    return t
 
 t_SQUOTE = r'\''
 t_DQUOTE = r'\"'
 t_COMMA = r','
 t_ASSIGN = r'='
-
-# t_NAME = r'[a-zA-Z_][a-zA-Z0-9_]*'
 
 def t_NAME(t):
     r'[a-zA-Z_][a-zA-Z0-9_]*'
@@ -535,11 +572,11 @@ if (len(sys.argv) != 2):
 with open(sys.argv[1], 'r') as myfile:
         data = myfile.read().replace('\n', '')
         
-        lex.input(data)
-        while True:
-            token = lex.token()
-            if not token: break
-            print(token)
+        # lex.input(data)
+        # while True:
+        #     token = lex.token()
+        #     if not token: break
+        #     print(token)
         
 try:
     root = yacc.parse(data)
