@@ -1,5 +1,7 @@
 # Zhongkai Ye 111314836
 
+names={}
+
 class Node:
     def __init__(self):
         print("init node")
@@ -231,19 +233,48 @@ class BlockNode(Node):
          for statement in self.statementList:
              statement.execute()
 
+class NameNode(Node):
+    def __init__(self,v):
+        self.value = str(v)
+    
+    def evaluate(self):
+        return (names[self.value]).evaluate()
+
+    def getName(self):
+        return self.value
+
+class AssignNameNode(Node):
+    def __init__(self,left,right):
+        self.left = left
+        self.right = right
+    
+    def evaluate(self):
+        a = self.left.getName()
+        b = self.right
+
+        names[a]=b
 
 
+reserved = {
+    'print' : 'PRINT',
+ }
 tokens = (
+    'ASSIGN','NAME',
     'LCURLY','RCURLY',
-    'PRINT','LPAREN', 'RPAREN', 'SEMICOLON', 'SQUOTE', 'DQUOTE','COMMA','LSBRACKET',"RSBRACKET",
+    'LPAREN', 'RPAREN', 'SEMICOLON', 'SQUOTE', 'DQUOTE','COMMA','LSBRACKET',"RSBRACKET",
     'STRING', 'NUMBER', 'TRUE', 'FALSE',
     'PLUS','MINUS','TIMES','DIVIDE','UMINUS','POWER','INDEXTUPLE','DIV', 'MOD','IN','CONS',
     'SMALLER','SMALLEROREQUAL','EQUAL','NOTEQUAL','BIGGER','BIGGEROREQUAL',
-    'NOT', 'AND','OR'
-    )
+    'NOT', 'AND','OR','ID'
+    )+tuple(reserved.values())
 
 # Tokens
-t_PRINT    = 'print'
+def t_PRINT(t):
+     r'print'
+     t.type = reserved.get(t.value,'PRINT')    # Check for reserved words
+     return t
+
+#t_PRINT    =r'print'
 t_LCURLY = r'{'
 t_RCURLY = r'}'
 t_LPAREN  = r'\('
@@ -278,6 +309,15 @@ t_OR =r'orelse'
 t_SQUOTE = r'\''
 t_DQUOTE = r'\"'
 t_COMMA = r','
+t_ASSIGN = r'='
+
+# t_NAME = r'[a-zA-Z_][a-zA-Z0-9_]*'
+
+def t_NAME(t):
+    r'[a-zA-Z_][a-zA-Z0-9_]*'
+    t.value = NameNode(t.value)
+    return t
+
 
 def t_NUMBER(t):
     #r'(-?\d*(\d\.|\.\d)\d* | \d+)| (-?\d*(\d\.|\.\d)\d* | \d+[e]-?\d+)'
@@ -323,43 +363,51 @@ precedence = (
     )
 
 
-def p_block(p):
+def p_block(t):
     '''
      block : LCURLY statement_list RCURLY
     '''
-    p[0] = BlockNode(p[2])
+    t[0] = BlockNode(t[2])
 
-def p_statement_list(p):
+def p_statement_list(t):
     '''
      statement_list : statement_list statement 
     '''
-    p[0] = p[1] + [p[2]]
+    t[0] = t[1] + [t[2]]
 
-def p_statement_list_val(p):
+def p_statement_list_val(t):
     '''
     statement_list : statement
     '''
-    p[0] = [p[1]]
+    t[0] = [t[1]]
 
-def p_statement_exp_print(p):
+def p_statement_exp_print(t):
     '''
     statement : execute_smt
               | print_op
     '''
-    p[0] = p[1]
-
+    t[0] = t[1]
 
 def p_execute_smt(t):
     """
     execute_smt : expression SEMICOLON
     """
-    t[0] = PrintNode(t[1])
+    #t[0] = PrintNode(t[1])
+    t[0] = t[1]
 
 def p_print_op(t):
     '''
     print_op : PRINT LPAREN expression RPAREN SEMICOLON
     '''
     t[0] = PrintNode(t[3])
+
+def p_expression_assign_name(t):
+    '''
+    expression : NAME ASSIGN expression
+    '''
+    AssignNameNode(t[1],t[3]).evaluate()
+    t[0] = NameNode(t[1])
+
 
 def p_expression_binop(t):
     '''expression : expression PLUS expression 
@@ -450,6 +498,10 @@ def p_factor_string(t):
     ''' factor : STRING'''
     t[0] = t[1]
 
+def p_factor_name(t):
+    ''' factor : NAME '''
+    t[0] = t[1]
+
 def p_error(t):
     return
     #print("Syntax error at '%s'" % t.value)
@@ -482,8 +534,16 @@ if (len(sys.argv) != 2):
 
 with open(sys.argv[1], 'r') as myfile:
         data = myfile.read().replace('\n', '')
+        
+        lex.input(data)
+        while True:
+            token = lex.token()
+            if not token: break
+            print(token)
+        
 try:
     root = yacc.parse(data)
     root.execute()
-except Exception:
-    print("SYNTAX ERROR")
+except Exception as e:
+    #print("SYNTAX ERROR")
+    print(e)
