@@ -268,6 +268,27 @@ class AssignListNode(Node):
         a = names[listName]
         a[listIndex] = value
         
+class IfNode(Node):
+    def __init__(self,v1,v2):
+        self.v1 = v1
+        self.v2 = v2
+
+    def execute(self):
+        if(self.v1.evaluate()):
+            self.v2.execute()
+
+class IfElseNode(Node):
+    def __init__(self,v1,v2,v3):
+        self.v1 = v1
+        self.v2 = v2
+        self.v3 = v3
+
+    def execute(self):
+        if(self.v1.evaluate()):
+            self.v2.execute()
+        else:
+            self.v3.execute()
+
 
 
 reserved = {
@@ -279,7 +300,10 @@ reserved = {
     'mod'   : 'MOD',
     'andalso': 'AND',
     'orelse': 'OR',
-    'not'   : 'NOT'
+    'not'   : 'NOT',
+    'if'    : 'IF',
+    'else'  : 'ELSE',
+    'while' : 'WHILE'
  }
 tokens = (
     'ASSIGN','NAME',
@@ -294,6 +318,21 @@ tokens = (
 def t_PRINT(t):
      r'print'
      t.type = reserved.get(t.value,'PRINT')
+     return t
+
+def t_IF(t):
+     r'if'
+     t.type = reserved.get(t.value,'if')
+     return t
+
+def t_ELSE(t):
+     r'else'
+     t.type = reserved.get(t.value,'else')
+     return t
+
+def t_WHILE(t):
+     r'while'
+     t.type = reserved.get(t.value,'while')
      return t
 
 #t_PRINT    =r'print'
@@ -365,11 +404,6 @@ t_DQUOTE = r'\"'
 t_COMMA = r','
 t_ASSIGN = r'='
 
-def t_NAME(t):
-    r'[a-zA-Z_][a-zA-Z0-9_]*'
-    t.value = NameNode(t.value)
-    return t
-
 
 def t_NUMBER(t):
     #r'(-?\d*(\d\.|\.\d)\d* | \d+)| (-?\d*(\d\.|\.\d)\d* | \d+[e]-?\d+)'
@@ -385,6 +419,11 @@ def t_STRING(t):
     #r'(\'|\")(\w|\s)*(\'|\")'
     r'(\'(\w|\s|\.|!|@|\#|\$|%|\^|&|\*)*\')|(\"(\w|\s|\.|!|@|\#|\$|%|\^|&|\*)*\")'
     t.value = StringNode((t.value)[1:len((t.value))-1])
+    return t
+
+def t_NAME(t):
+    r'[a-zA-Z_][a-zA-Z0-9_]*'
+    t.value = NameNode(t.value)
     return t
     
     
@@ -439,6 +478,18 @@ def p_statement_exp_print(t):
               | print_op
     '''
     t[0] = t[1]
+
+def p_statement_if(t):
+    '''
+    statement : IF LPAREN expression RPAREN block
+    '''
+    t[0] = IfNode(t[3],t[5])
+
+def p_statement_if_else(t):
+    '''
+    statement : IF LPAREN expression RPAREN block ELSE block 
+    '''
+    t[0] = IfElseNode(t[3],t[5],t[7])
 
 def p_execute_smt(t):
     """
