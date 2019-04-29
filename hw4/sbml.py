@@ -1,5 +1,5 @@
 # Zhongkai Ye 111314836
-
+import sys
 names={}
 
 class Node:
@@ -263,6 +263,9 @@ class AssignListNode(Node):
         value = self.v3.evaluate()
 
         a = names[listName]
+
+        if((listIndex<0) or listIndex>(len(a)-1)):
+            sys.exit("SEMANTIC ERROR")
         a[listIndex] = value
         
 class IfNode(Node):
@@ -304,8 +307,11 @@ class EvalIndexedVarNode(Node):
     def evaluate(self):
         a = self.v1.getName()
         b = self.v2.evaluate()
+        alist = names[a]
 
-        return (names[a])[b]
+        if((b<0) or b>(len(alist)-1)):
+            sys.exit("SEMANTIC ERROR")
+        return (alist)[b]
 
 reserved = {
     'print' : 'PRINT',
@@ -324,7 +330,7 @@ reserved = {
 tokens = (
     'ASSIGN','NAME',
     'LCURLY','RCURLY',
-    'LPAREN', 'RPAREN', 'SEMICOLON', 'SQUOTE', 'DQUOTE','COMMA','LSBRACKET',"RSBRACKET",
+    'LPAREN', 'RPAREN', 'SEMICOLON','COMMA','LSBRACKET',"RSBRACKET",
     'STRING', 'NUMBER',
     'PLUS','MINUS','TIMES','DIVIDE','UMINUS','POWER','INDEXTUPLE','CONS',
     'SMALLER','SMALLEROREQUAL','EQUAL','NOTEQUAL','BIGGER','BIGGEROREQUAL'
@@ -415,8 +421,6 @@ def t_OR(t):
     t.type = reserved.get(t.value,'OR')
     return t
 
-t_SQUOTE = r'\''
-t_DQUOTE = r'\"'
 t_COMMA = r','
 t_ASSIGN = r'='
 
@@ -637,15 +641,15 @@ def p_factor_name(t):
     t[0] = t[1]
 
 def p_error(t):
-    return
-    #print("Syntax error at '%s'" % t.value)
+    #return
+    sys.exit("SYNTAX ERROR")
 
 import ply.yacc as yacc
 yacc.yacc()
 yacc.yacc(debug=False)
 yacc.yacc(errorlog=yacc.NullLogger())
 
-import sys
+
 
 if (len(sys.argv) != 2):
     sys.exit("invalid arguments")
@@ -664,5 +668,5 @@ try:
     root.execute()
     
 except Exception:
-    print("SYNTAX ERROR")
+    print("SEMANTIC ERROR")
     #print(e)
