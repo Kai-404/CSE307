@@ -12,6 +12,13 @@ class Node:
     def execute(self):
         return 0
 
+class GenericNode(Node):
+    def __init__(self,v):
+        self.value = v
+    def evaluate(self):
+        
+        return self.value
+
 class NumberNode(Node):
     def __init__(self, v):
         if('.' in v):
@@ -247,8 +254,8 @@ class AssignNameNode(Node):
     def __init__(self,left,right):
         self.left = left
         self.right = right
-    
-    def evaluate(self):
+
+    def execute(self):
         a = self.left.getName()
         b = self.right.evaluate()
 
@@ -289,7 +296,29 @@ class IfElseNode(Node):
         else:
             self.v3.execute()
 
+class WhileNode(Node):
+    def __init__(self,v1,v2):
+        self.v1 = v1
+        self.v2 = v2
 
+    def execute(self):
+        
+        while(self.v1.evaluate()):
+            #print(names)
+            #print(self.v2)
+            self.v2.execute()
+
+
+class EvalIndexedVarNode(Node):
+    def __init__(self,v1,v2):
+        self.v1 = v1
+        self.v2 = v2
+    
+    def evaluate(self):
+        a = self.v1.getName()
+        b = self.v2.evaluate()
+
+        return (names[a])[b]
 
 reserved = {
     'print' : 'PRINT',
@@ -491,6 +520,12 @@ def p_statement_if_else(t):
     '''
     t[0] = IfElseNode(t[3],t[5],t[7])
 
+def p_statement_while(t):
+    '''
+    statement : WHILE LPAREN expression RPAREN block
+    '''
+    t[0] = WhileNode(t[3],t[5])
+
 def p_execute_smt(t):
     """
     execute_smt : expression SEMICOLON
@@ -506,18 +541,21 @@ def p_print_op(t):
 
 def p_expression_assign_name(t):
     '''
-    expression : NAME ASSIGN expression
-    '''
-    AssignNameNode(t[1],t[3]).evaluate()
-    t[0] = NameNode(t[1])
+    statement : NAME ASSIGN expression SEMICOLON
+    '''  
+    t[0] = AssignNameNode(t[1],t[3])
 
 def p_expression_assign_to_list(t):
     '''
-    expression : NAME LSBRACKET expression RSBRACKET ASSIGN expression
+    statement : NAME LSBRACKET expression RSBRACKET ASSIGN expression SEMICOLON
     '''
     t[0] = AssignListNode(t[1],t[3],t[6])
 
-
+def p_expression_eval_indexed_variable(t):
+    '''
+    expression : NAME LSBRACKET expression RSBRACKET
+    '''
+    t[0] = EvalIndexedVarNode(t[1],t[3])
 
 def p_expression_binop(t):
     '''expression : expression PLUS expression 
@@ -637,7 +675,9 @@ with open(sys.argv[1], 'r') as myfile:
         
 try:
     root = yacc.parse(data)
+    #print(names)
     root.execute()
+    
 except Exception as e:
     #print("SYNTAX ERROR")
     print(e)
