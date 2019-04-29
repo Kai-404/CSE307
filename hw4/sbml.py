@@ -12,13 +12,6 @@ class Node:
     def execute(self):
         return 0
 
-class GenericNode(Node):
-    def __init__(self,v):
-        self.value = v
-    def evaluate(self):
-        
-        return self.value
-
 class NumberNode(Node):
     def __init__(self, v):
         if('.' in v):
@@ -46,9 +39,6 @@ class PrintNode(Node):
         self.value = self.value.evaluate()
         if(self.value == None):
             return
-        # if(isinstance(self.value, str)):
-        #     print("'"+self.value+"'")
-        # else: 
         print(self.value)
 
 class BopNode(Node):
@@ -302,10 +292,7 @@ class WhileNode(Node):
         self.v2 = v2
 
     def execute(self):
-        
         while(self.v1.evaluate()):
-            #print(names)
-            #print(self.v2)
             self.v2.execute()
 
 
@@ -530,7 +517,6 @@ def p_execute_smt(t):
     """
     execute_smt : expression SEMICOLON
     """
-    #t[0] = PrintNode(t[1])
     t[0] = t[1]
 
 def p_print_op(t):
@@ -674,10 +660,9 @@ with open(sys.argv[1], 'r') as myfile:
         #     print(token)
         
 try:
-    root = yacc.parse(data)
-    #print(names)
+    root = yacc.parse(data) 
     root.execute()
     
-except Exception as e:
-    #print("SYNTAX ERROR")
-    print(e)
+except Exception:
+    print("SYNTAX ERROR")
+    #print(e)
