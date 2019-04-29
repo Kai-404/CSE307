@@ -238,7 +238,7 @@ class NameNode(Node):
         self.value = str(v)
     
     def evaluate(self):
-        return (names[self.value]).evaluate()
+        return names[self.value]
 
     def getName(self):
         return self.value
@@ -250,9 +250,24 @@ class AssignNameNode(Node):
     
     def evaluate(self):
         a = self.left.getName()
-        b = self.right
+        b = self.right.evaluate()
 
         names[a]=b
+
+class AssignListNode(Node):
+    def __init__(self,v1,v2,v3):
+        self.v1 = v1
+        self.v2 = v2
+        self.v3 = v3
+
+    def execute(self):
+        listName = self.v1.getName()
+        listIndex = self.v2.evaluate()
+        value = self.v3.evaluate()
+
+        a = names[listName]
+        a[listIndex] = value
+        
 
 
 reserved = {
@@ -278,7 +293,7 @@ tokens = (
 # Tokens
 def t_PRINT(t):
      r'print'
-     t.type = reserved.get(t.value,'PRINT')    # Check for reserved words
+     t.type = reserved.get(t.value,'PRINT')
      return t
 
 #t_PRINT    =r'print'
@@ -445,6 +460,13 @@ def p_expression_assign_name(t):
     AssignNameNode(t[1],t[3]).evaluate()
     t[0] = NameNode(t[1])
 
+def p_expression_assign_to_list(t):
+    '''
+    expression : NAME LSBRACKET expression RSBRACKET ASSIGN expression
+    '''
+    t[0] = AssignListNode(t[1],t[3],t[6])
+
+
 
 def p_expression_binop(t):
     '''expression : expression PLUS expression 
@@ -552,22 +574,6 @@ import sys
 
 if (len(sys.argv) != 2):
     sys.exit("invalid arguments")
-# fd = open(sys.argv[1], 'r')
-# code = ""
-
-# for line in fd:
-#     code = line.strip()
-
-#     try:
-#         lex.input(code)
-#         # while True:
-#         #     token = lex.token()
-#         #     if not token: break
-#         #     print(token)
-#         ast = yacc.parse(code)
-#         ast.execute()
-#     except Exception:
-#         print("SYNTAX ERROR")
 
 with open(sys.argv[1], 'r') as myfile:
         data = myfile.read().replace('\n', '')
