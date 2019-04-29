@@ -63,19 +63,10 @@ class BopNode(Node):
         elif (self.op =='mod'):
             return self.v1.evaluate() % self.v2.evaluate()
         elif (self.op =='in'):
-            if (not (isinstance(self.v2.evaluate(), str) or isinstance(self.v2.evaluate(), list))):
-                print("SEMANTIC ERROR")
-                return
             return (self.v1.evaluate() in self.v2.evaluate())
         elif (self.op =='::'):
-            if ((not isinstance(self.v2.evaluate(), list))):
-                print("SEMANTIC ERROR")
-                return
             return [self.v1.evaluate()]+self.v2.evaluate()
         elif (self.op == '<'):
-            # if (not(isinstance(self.v2.evaluate(), str) and isinstance(self.v1.evaluate(), str))) and (not (isinstance(self.v2, NumberNode) or isinstance(self.v1, NumberNode))):
-            #     print("SEMANTIC ERROR")
-            #     return
             return self.v1.evaluate() < self.v2.evaluate()
         elif (self.op == '<='):
             return self.v1.evaluate() <= self.v2.evaluate()
@@ -89,14 +80,8 @@ class BopNode(Node):
             return self.v1.evaluate() >= self.v2.evaluate()
 
         elif (self.op =='andalso'):
-            # if (not (isinstance(self.v2.evaluate(), bool) and isinstance(self.v2.evaluate(), bool))):
-            #     print("SEMANTIC ERROR")
-            #     return
             return (self.v1.evaluate() and self.v2.evaluate())
         elif (self.op =='orelse'):
-            # if (not (isinstance(self.v2.evaluate(), bool) and isinstance(self.v2.evaluate(), bool))):
-            #     print("SEMANTIC ERROR")
-            #     return
             return (self.v1.evaluate() or self.v2.evaluate())
 
 
@@ -106,8 +91,7 @@ class NotopNode(Node):
 
     def evaluate(self):
         if not isinstance(self.v1.evaluate(), bool):
-            print("SEMANTIC ERROR")
-            return
+            sys.exit("SEMANTIC ERROR")
         return (not self.v1.evaluate())
 
 
@@ -191,14 +175,11 @@ class IndexTupleNode(Node):
         b = self.v2.evaluate()
 
         if (not isinstance(a,int)):
-            print("SEMANTIC ERROR")
-            return
+            sys.exit("SEMANTIC ERROR")
         if (not isinstance(b, tuple)):
-            print("SEMANTIC ERROR")
-            return
+            sys.exit("SEMANTIC ERROR")
         if (a<1 or a>len(b)):
-            print("SEMANTIC ERROR")
-            return
+            sys.exit("SEMANTIC ERROR")
         a = a-1
         return b[a]
 
@@ -210,16 +191,8 @@ class IndexListNode(Node):
     def evaluate(self):
         a = self.v1.evaluate()
         b = self.v2.evaluate()
-
-        if (not (isinstance(a,list) or isinstance(a,str))):
-            print("SEMANTIC ERROR")
-            return
-        if (not isinstance(b, int)):
-            print("SEMANTIC ERROR")
-            return
         if (b<0 or b>(len(a)-1)):
-            print("SEMANTIC ERROR")
-            return
+            sys.exit("SEMANTIC ERROR")
         return a[b]
 
 class BlockNode(Node):
@@ -264,7 +237,7 @@ class AssignListNode(Node):
 
         a = names[listName]
 
-        if((listIndex<0) or listIndex>(len(a)-1)):
+        if((listIndex<0)):
             sys.exit("SEMANTIC ERROR")
         a[listIndex] = value
         
@@ -309,9 +282,15 @@ class EvalIndexedVarNode(Node):
         b = self.v2.evaluate()
         alist = names[a]
 
-        if((b<0) or b>(len(alist)-1)):
+        if((b<0)):
             sys.exit("SEMANTIC ERROR")
         return (alist)[b]
+
+class BlankNode(Node):
+    def __init__(self):
+        self
+    def execute(self):
+        return
 
 reserved = {
     'print' : 'PRINT',
@@ -479,6 +458,12 @@ def p_block(t):
      block : LCURLY statement_list RCURLY
     '''
     t[0] = BlockNode(t[2])
+
+def p_empty_block(t):
+    '''
+    block : LCURLY RCURLY
+    '''
+    t[0] = BlankNode()
 
 def p_statement_list(t):
     '''
@@ -668,5 +653,5 @@ try:
     root.execute()
     
 except Exception:
-    print("SEMANTIC ERROR")
+    sys.exit("SEMANTIC ERROR")
     #print(e)
