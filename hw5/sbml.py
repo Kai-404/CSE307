@@ -36,7 +36,10 @@ class PrintNode(Node):
         self.value = v
 
     def execute(self):
-        self.value = self.value.evaluate()
+        if (not isinstance(self.value,Node)):
+            self.value = self.value
+        else:
+            self.value = self.value.evaluate()
         if(self.value == None):
             return
         print(self.value)
@@ -318,27 +321,27 @@ tokens = (
 
 # Tokens
 def t_FUN(t):
-     r'fun'
+     r'\bfun\b'
      t.type = reserved.get(t.value,'fun')
      return t
 
 def t_PRINT(t):
-     r'print'
+     r'\bprint\b'
      t.type = reserved.get(t.value,'PRINT')
      return t
 
 def t_IF(t):
-     r'if'
+     r'\bif\b'
      t.type = reserved.get(t.value,'if')
      return t
 
 def t_ELSE(t):
-     r'else'
+     r'\belse\b'
      t.type = reserved.get(t.value,'else')
      return t
 
 def t_WHILE(t):
-     r'while'
+     r'\bwhile\b'
      t.type = reserved.get(t.value,'while')
      return t
 
@@ -356,29 +359,29 @@ t_LSBRACKET =r'\['
 t_RSBRACKET =r'\]'
 # t_TRUE =r'True'
 def t_TRUE(t):
-    r'True'
+    r'\bTrue\b'
     t.type = reserved.get(t.value,'TRUE')
     return t
 #t_FALSE =r'False'
 def t_FALSE(t):
-    r'False'
+    r'\bFalse\b'
     t.type = reserved.get(t.value,'FALSE')
     return t
 t_POWER =r'\*\*'
 t_INDEXTUPLE =r'\#'
 #t_DIV =r'div'
 def t_DIV(t):
-    r'div'
+    r'\bdiv\b'
     t.type = reserved.get(t.value,'DIV')
     return t
 #t_MOD =r'mod'
 def t_MOD(t):
-    r'mod'
+    r'\bmod\b'
     t.type = reserved.get(t.value,'MOD')
     return t
 #t_IN =r'in'
 def t_IN(t):
-    r'in'
+    r'\bin\b'
     t.type = reserved.get(t.value,'IN')
     return t
 t_CONS =r'::'
@@ -392,17 +395,17 @@ t_BIGGEROREQUAL =r'>='
 
 #t_NOT =r'not'
 def t_NOT(t):
-    r'not'
+    r'\bnot\b'
     t.type = reserved.get(t.value,'NOT')
     return t
 #t_AND =r'andalso'
 def t_AND(t):
-    r'andalso'
+    r'\bandalso\b'
     t.type = reserved.get(t.value,'AND')
     return t
 #t_OR =r'orelse'
 def t_OR(t):
-    r'orelse'
+    r'\borelse\b'
     t.type = reserved.get(t.value,'OR')
     return t
 
