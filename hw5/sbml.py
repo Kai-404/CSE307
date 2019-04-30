@@ -304,7 +304,8 @@ reserved = {
     'not'   : 'NOT',
     'if'    : 'IF',
     'else'  : 'ELSE',
-    'while' : 'WHILE'
+    'while' : 'WHILE',
+    'fun'   : 'FUN'
  }
 tokens = (
     'ASSIGN','NAME',
@@ -316,6 +317,11 @@ tokens = (
     )+tuple(reserved.values())
 
 # Tokens
+def t_FUN(t):
+     r'fun'
+     t.type = reserved.get(t.value,'fun')
+     return t
+
 def t_PRINT(t):
      r'print'
      t.type = reserved.get(t.value,'PRINT')
@@ -452,6 +458,58 @@ precedence = (
     ('right', 'UMINUS','POWER')
     )
 
+#defin a program looks like
+def p_program(t):
+    '''
+    program : functions block
+    '''
+
+def p_functions_list(t):
+    '''
+    functions : functions function
+    '''
+
+def p_functions_function(t):
+    '''
+    functions : function
+    '''
+
+#defin a function looks like
+def p_function(t):
+    '''
+    function: FUN NAME LPAREN params RPAREN block expression SEMICOLON
+    '''
+
+def p_params_list(t):
+    '''
+    params : params COMMA NAME
+    '''
+
+def p_params_param(t):
+    '''
+    params : NAME
+    '''
+
+#defin a function_call looks like 
+def p_expression_function_call(t):
+    '''
+    expression : function_call
+    '''
+
+def p_function_call(t):
+    '''
+    function_call : NAME LPAREN args RPAREN
+    '''
+
+def p_args_list(t):
+    '''
+    args : args COMMA expression
+    '''
+
+def p_args_expression(t):
+    '''
+    args : expression
+    '''
 
 def p_block(t):
     '''
