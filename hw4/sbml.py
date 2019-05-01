@@ -36,13 +36,14 @@ class PrintNode(Node):
         self.value = v
 
     def execute(self):
-        if (not isinstance(self.value,Node)):
-            self.value = self.value
-        else:
-            self.value = self.value.evaluate()
         if(self.value == None):
             return
-        print(self.value)
+        #this line takes me a day to debug, so i keep it to remind myself (ToT)
+        ####################################
+        #self.value = self.value.evaluate()#
+        ####################################
+        toPrint = self.value.evaluate()
+        print(toPrint)
 
 class BopNode(Node):
     def __init__(self, op, v1, v2):
