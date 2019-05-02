@@ -1,6 +1,7 @@
 # Zhongkai Ye 111314836
 import sys
 names={}
+funNodesList={}
 
 class Node:
     def __init__(self):
@@ -292,6 +293,43 @@ class BlankNode(Node):
     def execute(self):
         return
 
+class FunctionNode(Node):
+    def __init__(self,paramsL,blockN,expressionN):
+        self.paramList = paramsL
+        self.blockN = blockN
+        self.expressionN = expressionN
+    
+    def execute(self):
+        self.blockN.execute()
+
+class FunctionCallNode(Node):
+    def __init__(self,funName,argsL):
+        self.funName = funName
+        self.argsList = argsL
+
+    def evaluate(self):
+        global names
+        old_names = names
+        functionNode = funNodesList[self.funName.getName()]
+        new_names = {}
+        for i in range(len(functionNode.paramList)):
+            new_names[functionNode.paramList[i].getName()] = self.argsList[i].evaluate()
+        old_names = names
+        names = new_names
+        functionNode.execute()
+        result = functionNode.expressionN.evaluate()
+        names = old_names
+        return result
+
+class ProgramNode(Node):
+    def __init__(self,functionL,blockN):
+        self.functionsList = functionL
+        self.blockNode = blockN
+
+    def execute(self):
+        self.blockNode.execute()
+
+
 reserved = {
     'print' : 'PRINT',
     'True'  : 'TRUE',
@@ -463,53 +501,64 @@ def p_program(t):
     '''
     program : functions block
     '''
+    t[0] = ProgramNode(t[1],t[2])
 
 def p_functions_list(t):
     '''
     functions : functions function
     '''
+    t[0] = t[1]+[t[2]]
 
 def p_functions_function(t):
     '''
     functions : function
     '''
+    t[0] = [t[1]]
 
 #defin a function looks like
 def p_function(t):
     '''
-    function: FUN NAME LPAREN params RPAREN block expression SEMICOLON
+    function : FUN NAME LPAREN params RPAREN ASSIGN block expression SEMICOLON
     '''
+    t[0] = FunctionNode(t[4],t[7],t[8])
+    funNodesList[t[2].getName()]= t[0]
 
 def p_params_list(t):
     '''
     params : params COMMA NAME
     '''
+    t[0] = t[1] + [t[3]]
 
 def p_params_param(t):
     '''
     params : NAME
     '''
+    t[0] = [t[1]]
 
 #defin a function_call looks like 
 def p_expression_function_call(t):
     '''
     expression : function_call
     '''
+    t[0] = t[1]
 
 def p_function_call(t):
     '''
     function_call : NAME LPAREN args RPAREN
     '''
+    t[0] = FunctionCallNode(t[1],t[3])
 
 def p_args_list(t):
     '''
     args : args COMMA expression
     '''
+    t[0] = t[1]+[t[3]]
 
 def p_args_expression(t):
     '''
     args : expression
     '''
+    t[0] = [t[1]]
 
 def p_block(t):
     '''
