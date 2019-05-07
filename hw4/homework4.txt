@@ -1,0 +1,103 @@
+For this assignment, we add support for variables, assignments, conditionals, loops, and output to our language. For now, our language has only a single scope for variables: a global static scope.
+ 
+Variables and Assignments
+Variable names must begin with an ASCII letter, which may be followed by zero or more ASCII letters, digits and underscore. A regular expression that matches variable names is '[A-Za-z][A-Za-z0-9_]*'.
+ 
+Our expressions from the previous assignment need to be extended in two ways:
+we need to add support for assignments to variables (for example, x=1;) (including assignment to indexed list variables, for example: array[2] = 5 where array is a variable that contained a list, for example, array is previously assigned a list: [1,2,3]; after the assignment array[2] = 5, it contains [1,2,5]).
+we need to add support for variables used in expressions (for example, if x was assigned 1, then print(x); will print 1). Similarly, we should evaluate indexed variables if they occur in a place where their value is needed (for example, if array was assigned [1,2,5], then print(array[0]+array[1]+array[1+1]) should print 8).
+ 
+Evaluating a variable for its value should have the following behavior: if the variable has had a value assigned to it, the value should be returned. Otherwise, a "SEMANTIC ERROR" should be generated and the program should stop. (Nothing else should be printed.)
+ 
+When an indexed list variable is used in an expression, then both the list and the index are evaluated to their value and the indexed list expression is evaluated. If the variable is not a list (or a string), or the index is not an integer number, then a "Semantic error" should be produced. If the index is outside the bounds of the array, a "Semantic error" should be produced.
+ 
+The new types of statements are:
+Block
+A block statement consists of zero-or-more statements enclosed in curly braces {...}. When the block executes, each of the statements in the block is executed in sequential order. 
+Assignment
+An assignment statement consists of an expression, an equals sign, an expression, and a semicolon. When the assignment statement executes, the left expression is assigned the value evaluated of the right-expression.
+Print
+A print statement consists of the "print" keyword, a left-parenthesis, an expression, a right-parenthesis, and a semicolon. When the print statement executes, the expression is evaluated for its value. The printout should be the output that python produces for the input.
+For example, 
+ 
+>>> print('a');
+a
+>>> print(['a']);
+['a']
+>>> print(1<2);
+True
+Conditional statements:
+If statements
+Consists of the keyword "if", a left-parenthesis, an expression, a right-parenthesis, and a body block statement. When the if statement executes, if the expression is True, the body block statement is executed.
+If-else statements
+Consists of the keyword "if", a left-parenthesis, an expression, a right-parenthesis, a body block statement, an “else” keyword and a body block statement . When the if-else statement executes, if the expression is True, the first body block statement is executed, else the second body is executed.
+While
+A while statement consists of the keyword "while", a left-parenthesis, an expression, a right-parenthesis, and a body block statement. Executing the while statement begins by evaluating the condition for its value. If that value is False, the while statement terminates. Otherwise, the while statement executes its body block statement, and execution repeats.
+ 
+An input program consists of a single outermost block statement. Executing the program consists of executing this block.
+Your interpreter will be called with a single argument. This argument will be a file containing an input program. If the program contains any syntax error, your interpreter should print out: "SYNTAX ERROR" and exit. Otherwise, you should execute the program. If the execution of the program causes a semantic error, then your interpreter should print out "SEMANTIC ERROR" and exit.
+ 
+Execution of the program may cause print statements to execute and the output from print statements should be sent to standard output. No other output should be produced!
+An example input script might look like this:
+{
+    number = 33;
+    isPrime = 1;
+    i = 2;
+    while(isPrime==1 andalso number>i){
+        if (number mod i==0) {
+            isPrime = 0;
+        }
+        i = i + 1;
+    }
+    if(isPrime==1){
+         print("isPrime is true");
+    } else {
+        print("isPrime is false");
+    }
+}
+The only output produced by our interpreter from this file should be:
+isPrime is false
+ 
+To complete this assignment, I suggest you:
+Create a global map/dictionary to store the values of variables.
+Implement the evaluate() method of the VariableNode class so that it returns the values of variables.
+Implement the execute method of each of the statements.
+ 
+You should include your name and ID as the first line (commented out) in your python file. The program must run under Python 3.7.2. The program must be named sbml.py. Your program will be run with a command like:
+python3 sbml.py inputProgram.txt
+ 
+Grading:
+There are a total of 50 points. Your program will be run against use cases using similar programs to the sample input. If it generates a correct result you will get the points for each use case, while if the output is incorrect, you will lose the points for that use case. 
+Additional example input program:
+{
+    data = [ [ 100, 42 ], [ 100, 50 ], [ 123, 456 ], [ 300, 9000 ] ];
+    result = [ 0, 0, 0, 0 ];
+    i = 0;
+    while (i < 4){
+        a = data[i][0];
+        b = data[i][1];
+        if (a > 0){
+            while (b > 0){
+                if (a > b){
+                    a = a - b;
+                } else {
+                    b = b - a;
+                }
+            }
+        }
+        result[i] = a;
+        i = i + 1;
+    }
+    print(result);
+}
+The program will only print:
+[2, 50, 3, 300]
+Note again that printing strings should execute as in python (no quotes around single strings printed and single quotes around strings in lists):
+ 
+{ print("a"); }
+the output should be:
+a
+ 
+{ print([1, "a", 2]); }
+the output should be:
+[1, 'a', 2]

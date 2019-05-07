@@ -1,0 +1,95 @@
+Solve the following problems in Python:
+1. Write a program that reads a line from the input stream and determines if it is a legal identifier. The program should print only one output: True or False and exits. A python identifies starts with a letter A to Z or a to z or an underscore (_) followed by zero or more letters, underscores and digits (0 to 9), and it is not a keyword. The following list shows the Python keywords. These are reserved words and you cannot use them as constant or variable or any other identifier names.
+>>> help()
+Welcome to Python 3.6's help utility!
+help> keywords
+Here is a list of the Python keywords.  Enter any keyword to get more help.
+False               def                 if                  raise
+None                del                 import              return
+True                elif                in                  try
+and                 else                is                  while
+as                  except              lambda              with
+assert              finally             nonlocal            yield
+break               for                 not                
+class               from                or                 
+continue            global              pass               
+help>  
+Note: Starting an identifier with a single leading underscore indicates that the identifier is private. Starting an identifier with two leading underscores indicates a strongly private identifier. If the identifier also ends with two trailing underscores, the identifier is a language-defined special name.
+ 
+2. Write a program that reads a line and determines if it is a legal number. The program should print only one output: int or float or None and exits.
+ 
+In Python 3, there is effectively no limit to how long an integer value can be. Of course, it is constrained by the amount of memory your system has, as are all things, but beyond that an integer can be as long as you need it to be. The following strings can be prepended to an integer value to indicate a base other than 10:
+Prefix  Interpretation  Base
+0b (zero + lowercase letter 'b')
+0B (zero + uppercase letter 'B')          Binary 2
+0o (zero + lowercase letter 'o')
+0O (zero + uppercase letter 'O')          Octal   8
+0x (zero + lowercase letter 'x')
+0X (zero + uppercase letter 'X')          Hexadecimal   16
+>>> 10
+10
+>>> 0x10
+16
+>>> 0b10
+2
+>>> type(10)
+<class 'int'>
+>>> type(0o10)
+<class 'int'>
+>>> type(0x10)
+<class 'int'>
+ 
+The float type in Python designates a floating-point number. float values are specified with a decimal point.
+https://docs.python.org/3.6/tutorial/floatingpoint.html
+Optionally, the character e or E followed by a positive or negative integer may be appended to specify scientific notation:
+>>> 4.2
+4.2
+>>> type(4.2)
+<class 'float'>
+>>> 4.
+4.0
+>>> .2
+0.2
+>>> .4e7
+4000000.0
+>>> type(.4e7)
+<class 'float'>
+>>> 4.2e-4
+0.00042
+Float values as 64-bit “double-precision” values, according to the IEEE 754 standard (
+https://en.wikipedia.org/wiki/IEEE_754-2008_revision). In that case, the maximum value a floating-point number can have is approximately 1.8 X 10^308. Python will indicate a number greater than that by the string inf:
+>>> 1.79e308
+1.79e+308
+>>> 1.8e308
+inf
+The closest a nonzero number can be to zero is approximately 5.0 ⨉ 10-324. Anything closer to zero than that is effectively zero:
+>>> 5e-324
+5e-324
+>>> 1e-325
+0.0
+Floating point numbers are represented internally as binary (base-2) fractions. Most decimal fractions cannot be represented exactly as binary fractions, so in most cases the internal representation of a floating-point number is an approximation of the actual value. In practice, the difference between the actual value and the represented value is very small and should not usually cause significant problems.
+ 
+Numbers include positive and negative numbers.
+ 
+3. Write a program that reads two lines and determines if it is a legal string enclosed within single or double quotes. The program should print only one output: True or False and exits.
+ 
+The following is a table of escape sequences which cause Python to suppress the usual special interpretation of a character in a string:
+Escape
+Sequence         Usual Interpretation of
+Character(s) After Backslash  “Escaped” Interpretation
+\'          Terminates string with single quote opening delimiter          Literal single quote (') character
+\"          Terminates string with double quote opening delimiter         Literal double quote (") character
+\newline           Terminates input line  Newline is ignored
+\\          Introduces escape sequence    Literal backslash (\) character
+ 
+To break up a string over more than one line, include a backslash before each newline, and the newlines will be ignored:
+>>> 'a\
+... b'
+ 
+4. Read a date in the format MM/DD/YYYY from the input stream and print it out as Day, Month DD, Year. For example, we read 02/07/2019 and prints Thursday, February 7, 2019.
+ 
+Your program must work with python 3.7.2. You must name the files: q1.py, q2.py, q3.py, and q4.py, and submit all files separately in your last submission of the homework assignment on Blackboard. Note that, in any one submission on Blackboard, you can attach multiple files one after another!
+ 
+Don't submit zips or any other archives. Do not print anything else, but what is required!
+ 
+Each problem is 5 points.

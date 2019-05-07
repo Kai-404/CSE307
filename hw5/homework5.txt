@@ -1,0 +1,42 @@
+Add function definitions and invocations to SBML. You must implement a stack to create the scoping of local variables in recursive calls. We will use call by value for parameter passing.
+A function definition starts with the keyword 'fun', the name of the function, open parentheses, arguments separated by commas, closed parentheses, equal sign, block and an expression. The block should be executed first, then the expression is evaluated and the value is returned.
+An input program might contain multiple function definitions, followed by a single main block that gets executed.
+ 
+Your program should work on the following 2 examples:
+ 
+Example 1:
+fun factorial(n) = {
+    if(n <1){
+        output = 1;
+    }else{
+        output = n * factorial(n - 1);
+    }
+} output;
+
+{
+    print(factorial(3));
+}
+Output:
+6
+ 
+Example 2:
+fun gcd(a,b) = {
+    t = b;
+    b = a mod b;
+    if(b == 0){
+        output = t;
+    } else {
+        output = gcd(t,b);
+    }
+} output;
+
+{
+    print(gcd(32,18));
+}
+Output:
+2
+ 
+Please submit only the python file sbml.py on Blackboard.
+The program will be run on input files and the output is compared with the required output.
+ 
+Total points: 30.

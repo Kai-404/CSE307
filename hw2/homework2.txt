@@ -1,0 +1,12 @@
+Write an SML program (users.sml) that computes the permissions for all the users in a course (students, graduate TAs, undergraduate Tas, graders and instructors). This is called the role-based access control (RBAC) problem. It is used in operating systems (user, groups, permissions to folders and files), databases, etc.
+We consider the following sets:
+USERS set of users
+ROLES set of roles
+PERMS set of permissions
+UR set of user-role pairs is subset of USERS * ROLES
+RP set of role-permission pairs is subset of ROLES * PERMS
+RR set of pairs of roles, called ascendant and descendant roles, where an ascendant role inherits all permissions from a descendant role. This role hierarchy is transitive.
+(15 points) Write a function authorizedRoles(User, ListUserRoleTuples, ListRoleRoleTuples) 
+    that returns the set UserAuthorizedRoles (represented as a list) of roles that user has.
+(15 points) Write a function authorizedPermissions(User, UserAuthorizedRoles, ListRolePermissionTuples) 
+    that returns the set UserAuthorizedPermissions (represented as a list) of permissions that user has.
