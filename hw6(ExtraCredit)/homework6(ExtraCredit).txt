@@ -1,0 +1,60 @@
+1. Stony Brook Buses (File name: bus.pl) (40 points)
+The Stony Brook bus system has N buses. Each bus is connects exactly two stations and it does not stop on the stations between those two stations. To simplify the problem, all buses are set on one linear route and the stations are labeled with increasing integers starting with 0. Assume distance between each station is the same: 1 minute from one station to another.
+In the beginning, each bus at its starting station and they start driving to the next station. After some bus come to its next station, it immediately starts to go back to its previous station, and so on.
+Paul is at the first station, 0 (zero), and he wants to go to the last station as soon as possible. He can change buses only at the stations that are common to both buses. The buses are constantly moving, so Paul has to wait sometimes for the next bus. If the other bus is in that moment on that station, that change does not take any time. The goal is to find out the quickest possible time that Paul can reach the last station.
+Input Format
+
+An input file for contains the following facts:
+
+
+One fact of the form last(K), which specifies the last station, and goal,
+
+One fact of the form buses(N), which specifies the number of buses,
+
+For each I in 1..N, there is a fact of the form bus(I,B,T), where I is the bus number, B is the starting station of the bus, and T is the top station of the bus,
+ 
+The input data guarantees that a solution exists.
+
+Output format
+
+The output should contain exactly one fact of the form min_time(S), where S is the minimum amount of minutes Paul can make it to the last station.
+
+Examples
+
+
+Input
+
+Output
+
+last(10).
+buses(4).
+bus(1,0,5).
+bus(2,5,10).
+bus(3,5,7).
+bus(4,7,10).
+
+min_time(15).
+
+last(10).
+buses(4).
+bus(1,0,5).
+bus(2,5,10).
+bus(3,5,8).
+bus(4,8,10).
+
+min_time(14).
+How?
+
+Use Case 1: Paul takes the bus 1 from station 0 to station 5. Here, he has 2 options:
+Case 1.1: Paul waits 5 minutes for bus 2 to come back to 5 (because by the time Paul gets to station 5, the bus 2 is up to station 10). He takes the bus 2 and gets to station 10 at minute 15.
+Case 1.2: Paul waits 3 minutes for bus 3 to come back to 5 (because by the time Paul gets to station 5, the bus 3 is at station 6 going up). He takes the bus 3 and gets to station 7 at minute 10. The bus 4 is at station 9 going back, so Paul has to wait 2 minutes to take it. Paul gets to station 10 at minute 15.   
+Use Case 2: Paul takes the bus 1 from station 0 to station 5. Here, he has 2 options:
+Case 2.1: Paul waits 5 minutes for bus 2 to come back back to 5 (because by the time Paul gets to station 5, the bus 2 is up to station 10). He takes the bus 2 and gets to station 10 at minute 15.
+Case 2.2: Paul waits 1 minute for bus 3 to come back to 5 (because by the time Paul gets to station 5, the bus 3 is at station 6 going back). He takes the bus 3 and gets to station 8 at minute 8. bus 4 is at station 9 going up, so Paul has to wait 3 minutes. Paul gets to station 10 at minute 14.
+ 
+Note: Sometimes Paul can also choose to go back to some previous station, like in this case:
+
+bus(1,0,3).
+bus(2,2,3).
+bus(3,2,10).
+In this case, Paul will go from station 0 to station 3, then from station 3 to station 2, and then from station 2 to station 10.
