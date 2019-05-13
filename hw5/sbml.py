@@ -583,6 +583,9 @@ def p_statement_list_val(t):
     statement_list : statement
     '''
     t[0] = [t[1]]
+def p_statement_block(t):
+    ''' statement : block '''
+    t[0] = t[1]
 
 def p_statement_exp_print(t):
     '''
