@@ -1,0 +1,9 @@
+fun fibonacci(n) = {
+    result = 1;
+    if (n > 1) {
+        result = fibonacci(n-1) + fibonacci(n-2);
+    }
+} result;
+{
+	print(fibonacci(4) + 1);
+}

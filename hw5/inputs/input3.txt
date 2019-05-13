@@ -1,0 +1,11 @@
+fun mcCarthy91(n) = {
+	if (n > 100){
+		output = n - 10;
+	}
+	else{
+		output = mcCarthy91(mcCarthy91(n + 11));
+	} 
+}output;
+{
+	print(mcCarthy91(14));
+}

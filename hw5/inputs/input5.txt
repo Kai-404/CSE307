@@ -1,0 +1,13 @@
+fun Hanoi(n, src, dst, tmp)={
+    result = 0;
+    if(n > 0){
+        pre = Hanoi(n - 1, src, tmp, dst);
+        post = Hanoi(n - 1, tmp, dst, src);
+        result = pre + post + 1;
+    } else{
+        result = 1;
+    }
+} result;
+{
+print(Hanoi(4, "A", "C", "B"));
+}
