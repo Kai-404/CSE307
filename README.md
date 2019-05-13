@@ -14,5 +14,5 @@
 * HW5: Functions
 
   [HW5 requirement](https://github.com/Kai-404/CSE307/blob/master/hw5/homework5.txt)
-### HW6: Prolog
-[HW6 requirement](https://github.com/Kai-404/CSE307/blob/master/hw6/homework6.txt)
+### HW6: Prolog (Extra Credit)
+[HW6(Extra Credit) requirement](https://github.com/Kai-404/CSE307/blob/master/hw6(ExtraCredit)/homework6(ExtraCredit).txt)
